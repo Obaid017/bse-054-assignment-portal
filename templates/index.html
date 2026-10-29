@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Assignment Submission Portal</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 780px; margin: 2rem auto; padding: 0 1rem; }
+    label { display: block; margin-top: .8rem; font-weight: bold; }
+    input { width: 100%; padding: .5rem; box-sizing: border-box; }
+    button { margin-top: 1rem; padding: .6rem 1.2rem; cursor: pointer; }
+    .errors { background: #fdecea; border: 1px solid #f5c2c0; padding: .4rem 1rem; margin-top: 1rem; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+    th, td { border: 1px solid #ccc; padding: .4rem .6rem; text-align: left; }
+  </style>
+</head>
+<body>
+  <h1>Assignment Submission Portal</h1>
+
+  {% if errors %}
+  <div class="errors">
+    <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+
+  <form method="post" action="/submit">
+    <label for="name">Name</label>
+    <input id="name" name="name" value="{{ form.get('name', '') }}">
+    <label for="reg_no">Registration number</label>
+    <input id="reg_no" name="reg_no" value="{{ form.get('reg_no', '') }}">
+    <label for="title">Assignment title</label>
+    <input id="title" name="title" value="{{ form.get('title', '') }}">
+    <label for="url">Submission URL</label>
+    <input id="url" name="url" value="{{ form.get('url', '') }}" placeholder="https://github.com/user/repo">
+    <button type="submit">Submit assignment</button>
+  </form>
+
+  <h2>Saved submissions ({{ submissions|length }})</h2>
+  {% if submissions %}
+  <table>
+    <tr><th>Name</th><th>Reg. no.</th><th>Title</th><th>URL</th><th>Submitted at (UTC)</th></tr>
+    {% for s in submissions %}
+    <tr>
+      <td>{{ s.name }}</td><td>{{ s.reg_no }}</td><td>{{ s.title }}</td>
+      <td><a href="{{ s.url }}">{{ s.url }}</a></td><td>{{ s.submitted_at }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>No submissions yet.</p>
+  {% endif %}
+</body>
+</html>

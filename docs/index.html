@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assignment Submission Portal - Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 780px; margin: 2rem auto; padding: 0 1rem; }
+    label { display: block; margin-top: .8rem; font-weight: bold; }
+    input { width: 100%; padding: .5rem; box-sizing: border-box; }
+    button { margin-top: 1rem; padding: .6rem 1.2rem; cursor: pointer; }
+    .errors { background: #fdecea; border: 1px solid #f5c2c0; padding: .4rem 1rem; margin-top: 1rem; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+    th, td { border: 1px solid #ccc; padding: .4rem .6rem; text-align: left; }
+    .note { color: #555; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <h1>Assignment Submission Portal (Static Demo)</h1>
+  <p class="note">Demo only: submissions are kept in memory in your browser and disappear on refresh.</p>
+  <div id="errors" class="errors" hidden></div>
+
+  <form id="form">
+    <label for="name">Name</label><input id="name">
+    <label for="reg_no">Registration number</label><input id="reg_no">
+    <label for="title">Assignment title</label><input id="title">
+    <label for="url">Submission URL</label><input id="url" placeholder="https://github.com/user/repo">
+    <button type="submit">Submit assignment</button>
+  </form>
+
+  <h2>Saved submissions (<span id="count">0</span>)</h2>
+  <table id="table" hidden>
+    <thead><tr><th>Name</th><th>Reg. no.</th><th>Title</th><th>URL</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <p id="empty">No submissions yet.</p>
+
+  <script>
+    const fields = { name: "Name", reg_no: "Registration number", title: "Assignment title", url: "Submission URL" };
+    const submissions = [];
+
+    function validUrl(v) {
+      try { const u = new URL(v); return ["http:", "https:"].includes(u.protocol) && u.hostname.includes("."); }
+      catch { return false; }
+    }
+
+    document.getElementById("form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const data = {}, errors = [];
+      for (const [id, label] of Object.entries(fields)) {
+        data[id] = document.getElementById(id).value.trim();
+        if (!data[id]) errors.push(label + " is required.");
+      }
+      if (data.url && !validUrl(data.url)) errors.push("Submission URL is invalid. It must start with http:// or https://");
+
+      const box = document.getElementById("errors");
+      box.innerHTML = "";
+      box.hidden = errors.length === 0;
+      errors.forEach((m) => { const p = document.createElement("div"); p.textContent = m; box.appendChild(p); });
+      if (errors.length) return;
+
+      submissions.push(data);
+      e.target.reset();
+      render();
+    });
+
+    function render() {
+      const rows = document.getElementById("rows");
+      rows.innerHTML = "";
+      for (const s of submissions) {
+        const tr = document.createElement("tr");
+        for (const key of ["name", "reg_no", "title", "url"]) {
+          const td = document.createElement("td");
+          if (key === "url") { const a = document.createElement("a"); a.href = s.url; a.textContent = s.url; td.appendChild(a); }
+          else td.textContent = s[key];
+          tr.appendChild(td);
+        }
+        rows.appendChild(tr);
+      }
+      document.getElementById("count").textContent = submissions.length;
+      document.getElementById("table").hidden = submissions.length === 0;
+      document.getElementById("empty").hidden = submissions.length > 0;
+    }
+  </script>
+</body>
+</html>

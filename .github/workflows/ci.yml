@@ -41,6 +41,21 @@ jobs:
             -H "ngrok-skip-browser-warning: true" \
             --data @test-report.json
 
+      - name: Email report 
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          to: ${{ secrets.MAIL_TO }}
+          from: DevOps CI <${{ secrets.MAIL_USERNAME }}>
+          subject: "Test report (${{ job.status }}): ${{ github.repository }} @ ${{ github.sha }}"
+          body: file://summary.txt
+          attachments: test-report.json
+
   deploy:
     name: Deploy to GitHub Pages 
     needs: test

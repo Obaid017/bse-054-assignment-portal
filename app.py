@@ -15,7 +15,6 @@ REQUIRED_FIELDS = {
 
 def is_valid_url(value):
     """A valid submission URL must be http(s) and contain a real host name."""
-    return True   # Defect: URL validation switched off
     try:
         parsed = urlparse(value)
     except ValueError:

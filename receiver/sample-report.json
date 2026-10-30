@@ -1,0 +1,13 @@
+{
+  "repository": "Obaid017/bse-054-assignment-portal",
+  "branch": "main",
+  "commit_sha": "89c339df335a3010e463425a1d73ed65cdf5cbd8",
+  "run_id": "123456",
+  "timestamp": "2026-10-30T04:20:00+00:00",
+  "summary": { "total": 3, "passed": 3, "failed": 0, "status": "passed" },
+  "tests": [
+    { "name": "test_valid_submission_is_saved_and_listed", "result": "passed", "failure_message": null },
+    { "name": "test_missing_registration_number_is_rejected", "result": "passed", "failure_message": null },
+    { "name": "test_invalid_url_is_rejected_and_not_saved", "result": "passed", "failure_message": null }
+  ]
+}

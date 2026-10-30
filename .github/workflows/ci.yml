@@ -24,3 +24,19 @@ jobs:
 
       - name: Run tests
         run: python -m pytest --junitxml=report.xml
+
+      - name: Build JSON report
+        if: always()
+        run: python scripts/build_report.py
+
+      - name: Send report to local receiver
+        if: always()
+        env:
+          REPORT_URL: ${{ secrets.REPORT_URL }}
+          REPORT_TOKEN: ${{ secrets.REPORT_TOKEN }}
+        run: |
+          curl --fail --silent --show-error -X POST "$REPORT_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-Report-Token: $REPORT_TOKEN" \
+            -H "ngrok-skip-browser-warning: true" \
+            --data @test-report.json
